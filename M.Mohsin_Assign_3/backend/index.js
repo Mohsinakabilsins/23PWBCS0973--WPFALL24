@@ -38,6 +38,11 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Test route to verify if the backend is reachable
+app.get('/test', (req, res) => {
+  res.json({ message: 'Test route works!' });
+});
+
 // API routes
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
@@ -46,6 +51,11 @@ app.use('/api/cart', cartRouter);
 // Health check or sample route
 app.get('/some-route', (req, res) => {
     res.json({ message: 'CORS is set up!' });
+});
+
+// Catch-all route for incorrect paths (moved to the end)
+app.use('/*', (req, res) => {
+    res.send("Please enter a correct path");
 });
 
 // Database connection
@@ -57,11 +67,6 @@ mongoose.connect(MONGO_URI)
   .catch((error) => {
     console.error("Error in connecting to MongoDB:", error);
   });
-
-// Catch-all route for incorrect paths (moved to the end)
-app.use('/*', (req, res) => {
-    res.send("Please enter a correct path");
-});
 
 // Start the server
 app.listen(PORT, () => {
