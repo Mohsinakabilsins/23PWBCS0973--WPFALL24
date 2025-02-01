@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import path, { dirname, resolve } from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -38,22 +38,12 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Test route to verify if the backend is reachable
-app.get('/test', (req, res) => {
-  res.json({ message: 'Test route works!' });
-});
-
 // API routes
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 
-// Health check or sample route
-app.get('/some-route', (req, res) => {
-    res.json({ message: 'CORS is set up!' });
-});
-
-// Catch-all route for incorrect paths (moved to the end)
+// Catch-all route for incorrect paths (should be the last one)
 app.use('/*', (req, res) => {
     res.send("Please enter a correct path");
 });
