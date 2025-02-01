@@ -9,8 +9,8 @@ import userRouter from './routes/userRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import cartRouter from './routes/cartRoutes.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url); // corrected to __filename
+const __dirname = dirname(__filename); // corrected to __dirname
 
 dotenv.config({ path: path.join(__dirname, "../../config/.env") });
 
@@ -21,7 +21,6 @@ if (!PORT) {
 }
 
 const URL = process.env.FRONTEND_URL;
-
 if (!URL) {
     console.log("FRONTEND_URL is not defined in the environment file");
 }
@@ -43,12 +42,17 @@ app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 
-// Catch-all route for incorrect paths (should be the last one)
+// Health check route
+app.use('/', (req, res) => {
+    res.send("connected");
+});
+
+// Catch-all route for incorrect paths
 app.use('/*', (req, res) => {
     res.send("Please enter a correct path");
 });
 
-// Database connection
+// MongoDB connection
 const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
   .then(() => {
