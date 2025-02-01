@@ -29,12 +29,16 @@ if (!URL) {
 const app = express();
 
 
+// app.use(cors({
+//     origin: `${URL}`, 
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//     credentials: true,
+// })); 
 app.use(cors({
-    origin: `${URL}`, 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-})); 
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+}));
 
 
 app.listen(PORT, () => {
