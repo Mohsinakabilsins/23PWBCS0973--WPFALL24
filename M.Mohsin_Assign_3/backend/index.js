@@ -12,7 +12,6 @@ import cartRouter from './routes/cartRoutes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load environment variables
 dotenv.config({ path: path.join(__dirname, "../../config/.env") });
 
 const PORT = process.env.PORT || 5000;
@@ -21,17 +20,17 @@ if (!PORT) {
   process.exit(1);
 }
 
-const FRONTEND_URL = process.env.FRONTEND_URL;
-if (!FRONTEND_URL) {
-    console.error("FRONTEND_URL is not defined in the environment file");
-    process.exit(1);
+const URL = process.env.FRONTEND_URL;
+
+if (!URL) {
+    console.log("FRONTEND_URL is not defined in the environment file");
 }
 
 const app = express();
 
 // CORS configuration
 app.use(cors({
-    origin: FRONTEND_URL, 
+    origin: process.env.FRONTEND_URL,
     credentials: true
 }));
 
@@ -39,7 +38,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes setup
+// API routes
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
@@ -47,11 +46,6 @@ app.use('/api/cart', cartRouter);
 // Health check or sample route
 app.get('/some-route', (req, res) => {
     res.json({ message: 'CORS is set up!' });
-});
-
-// Catch-all route for incorrect paths
-app.use('/*', (req, res) => {
-    res.send("Please enter a correct path");
 });
 
 // Database connection
@@ -63,6 +57,11 @@ mongoose.connect(MONGO_URI)
   .catch((error) => {
     console.error("Error in connecting to MongoDB:", error);
   });
+
+// Catch-all route for incorrect paths (moved to the end)
+app.use('/*', (req, res) => {
+    res.send("Please enter a correct path");
+});
 
 // Start the server
 app.listen(PORT, () => {
